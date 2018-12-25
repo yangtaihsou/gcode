@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="$!{tem.packagePath}.$!{table.className}Mapper">
+
+    <!--保存数据-->
+    <insert id="save" parameterType="$!{table.className}">
+        INSERT INTO $!{table.tableName}
+        (
+        <include refid="Base_Column_List_WithOutPk" />
+        )
+        VALUES
+        (
+        <include refid="Javabean_Column_List_WithOutPk" />
+        )
+    </insert>
+
+ #if($!table.primaryField)
+    <!--根据主键$!{table.primaryField.columnName}，更新$!{table.tableName}表相应数据-->
+    <update id="updateByPrimaryKey" parameterType="$!{table.className}">
+        UPDATE $!{table.tableName}
+        <set>
+            <include refid="updateSetSql" />
+        </set>
+        WHERE  $!{table.primaryField.columnName} = #{$!{table.primaryField.propertyName}}
+    </update>
+    <!--根据主键$!{table.primaryField.columnName}，查找$!{table.tableName}表的唯一数据-->
+    <select id="queryByPrimaryKey" parameterType="$!{table.primaryField.javaFullType}"  resultType="$!{table.className}">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM  $!{table.tableName}  where  $!{table.primaryField.columnName} = #{$!{table.primaryField.propertyName}}
+    </select>
+#end
+
+  <!--根据条件，查找$!{table.tableName}表相应数据-->
+    <select id="queryBySelective"   resultType="$!{table.className}">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM $!{table.tableName} where      <include refid="whereQuerySelectiveSql" /> 1=1
+    </select>
+
+    <!--根据条件，查找$!{table.tableName}表相应数据的总量-->
+    <select id="queryCountBySelective"   resultType="java.lang.Long">
+        SELECT
+         #if($!table.primaryField)
+            count($!{table.primaryField.columnName} )
+            #else
+            count(*)
+         #end
+        FROM  $!{table.tableName}  where <include refid="whereQuerySelectiveSql" />  1=1
+    </select>
+
+
+    <!--根据条件，分页查找$!{table.tableName}表相应数据-->
+    <select id="queryBySelectiveForPagination" parameterType="$!{table.className}"  resultType="$!{table.className}">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM $!{table.tableName} where  <include refid="whereQuerySelectiveSql" />  1=1
+        #if($!table.primaryField)
+        order by $!{table.primaryField.columnName} desc
+         #end
+         LIMIT #{startRow} , #{pageSize}
+    </select>
+
+
+    <!--start:根据唯一索引进行查找和更新,$!{table.tableName}表-->
+    #foreach($field in ${table.uniqIndexForOneFieldList})
+      <select id="queryBy$field.propertyUpName"  parameterType="$!{field.javaFullType}"   resultType="$!{table.className}">
+          SELECT
+          <include refid="Base_Column_List" />
+          FROM $!{table.tableName} WHERE    $!{field.columnName}=#{$!{field.propertyName}}
+      </select>
+
+        <update id="updateBy$field.propertyUpName" parameterType="$!{table.className}" >
+            UPDATE $!{table.tableName}
+            <set>
+                <include refid="updateSetSql" />
+            </set>
+            WHERE  $!{field.columnName}=#{$!{field.propertyName}}
+        </update>
+    #end
+    <!--end:根据唯一索引进行查找和更新,$!{table.tableName}表-->
+
+    <!--$!{table.tableName}表所有字段-->
+    <sql id="Base_Column_List">
+        #foreach($field in $!table.fieldList)
+            $!{field.propertyName}  #if($!table.fieldList.size()!=$velocityCount),#end    <!--$!{field.comment}-->
+        #end
+    </sql>
+
+    <!--$!{table.tableName}表除了自增长的所有字段-->
+    <sql id="Base_Column_List_WithOutPk">
+        #foreach($field in $!table.fieldList)
+            #if($field.autoIncreFlag)
+                $!{field.propertyName}      #if($!table.fieldList.size()!=$velocityCount),#end   <!--$!{field.comment}-->
+            #end
+        #end
+    </sql>
+
+    <!--javabean除了自增长的所有字段-->
+    <sql id="Javabean_Column_List_WithOutPk">
+        #foreach($field in $!table.fieldList)
+            #if(!$field.autoIncreFlag)
+                #if( $field.jdbcType=="BIT")
+                    1 #if($!table.fieldList.size()!=$velocityCount),#end
+                #* #elseif($field.jdbcType=="DATETIME")
+                     now() #if($!table.fieldList.size()!=$velocityCount),#end*#
+                #else
+                    #{$!{field.propertyName}} #if($!table.fieldList.size()!=$velocityCount),#end
+                #end     <!--$!{field.comment}-->
+            #end
+        #end
+    </sql>
+
+
+    <sql id="updateSetSql">
+        #foreach($field in $!table.fieldList)
+            <if test="$field.propertyName != null">
+                $!{field.columnName}=#{$!{field.propertyName}},
+            </if>
+        #end
+    </sql>
+
+
+    <sql id="whereQuerySelectiveSql">
+        <if test="query!= null">
+            #foreach($field in $!table.fieldList)
+                #if( $field.jdbcType=="varchar")
+                    <if test="query.$field.propertyName != null and query.$field.propertyName!=''">
+                        $!{field.columnName} = #{query.$!{field.propertyName}}  and
+                    </if>
+                #else
+                    <if test="query.$field.propertyName != null">
+                        $!{field.columnName} = #{query.$!{field.propertyName}} and
+                    </if>
+                #end
+
+            #end
+        </if>
+    </sql>
+
+    <sql id="whereSelectiveSql">
+            #foreach($field in $!table.fieldList)
+                #if( $field.jdbcType=="varchar")
+                    <if test="$field.propertyName != null and $field.propertyName!=''">
+                        $!{field.columnName} = #{$!{field.propertyName}}  and
+                    </if>
+                #else
+                    <if test="$field.propertyName != null">
+                        $!{field.columnName} = #{$!{field.propertyName}} and
+                    </if>
+                #end
+            #end
+    </sql>
+</mapper>

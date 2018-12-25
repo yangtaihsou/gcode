@@ -1,0 +1,9 @@
+outputPath: d:/yangkuan/1/
+sqlType: mysql
+sqlUrl: jdbc:mysql://127.0.0.1:3306/test?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
+userName: root
+userPass: 123456
+sysName: pay-databases
+mark:
+excludeFields: createTime,updateTime,createDate,updateDate,create_time
+excludeTables: match_stock,job_

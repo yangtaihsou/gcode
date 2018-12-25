@@ -1,0 +1,203 @@
+package $!{package};
+import $!{importBean};
+
+import java.lang.Long;
+
+import com.old.jr.simpleconfig.domain.$!{className};
+import com.old.jr.simpleconfig.util.ConstantModel;
+import com.old.jr.simpleconfig.util.exception.ErpException;
+import com.old.jr.simpleconfig.util.pagination.PaginationAnnotion;
+import com.old.jr.simpleconfig.util.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
+import com.old.jr.simpleconfig.util.ControllerUtil;
+
+import javax.annotation.Resource;
+
+import com.old.jr.simpleconfig.service.*;
+import com.old.jr.simpleconfig.util.*;
+/**
+*$!{className}($!{tableComment})的controller
+* User: yangkuan@jd.com
+*/
+@Controller
+@RequestMapping("/$!{instName}")
+public class $!{className}Controller {
+
+private static final Logger logger = LoggerFactory.getLogger($!{className}Controller.class);
+
+@Resource(name = "controllerUtil")
+private ControllerUtil controllerUtil;
+
+
+@Resource(name = "$!{instName}Service")
+private $!{className}Service $!{instName}Service;
+
+
+#foreach($field in $indexFields)
+@Resource(name = "$!{field.propertyName}Map")
+private Map<$!{field.javaType},String> $!{field.propertyName}Map;
+#end
+
+/**
+* 获取列表
+* @param model
+* @return
+*/
+@RequestMapping(value = "/list", method = RequestMethod.GET)
+@PaginationAnnotion(pageName = "p", pageSize = ConstantModel.pageSize)
+public String list(Model model, $!{className} $!{instName}, Integer p, HttpServletRequest request) throws Exception {
+PageQuery<$!{className}> pageQuery = new PageQuery<$!{className}>();
+    p = p == null ? 1 : p;
+    pageQuery.setPageSize(20);
+    pageQuery.setPageNo((p - 1) * 20);
+    pageQuery.setQuery($!{instName});
+    logger.info(request.getRequestURI() + "请求报文:" + GsonUtils.toJson(pageQuery));
+    List<$!{className}> $!{instName}List = $!{instName}Service.queryBySelectiveForPagination(pageQuery);
+        model.addAttribute("count", $!{instName}Service.queryCountBySelective(pageQuery));
+        model.addAttribute("$!{instName}List", $!{instName}List);
+
+
+        setDictionayToModel(model);
+        ConstantModel.loadRequestParameterMapToModel(model, request);
+        return "jsp/list/$!{className}List";
+        }
+
+        @RequestMapping(value = "/toAdd", method = RequestMethod.GET)
+        public String toAdd(Model model) {
+
+        setDictionayToModel(model);
+        return "jsp/add/$!{className}Add";
+        }
+
+
+        /**
+        * 新增
+        *
+        * @return
+        */
+        @RequestMapping(value = "/save", method = RequestMethod.POST)
+        @ResponseBody
+        public Result save($!{className} $!{instName}, HttpServletRequest request) {
+        Result result = new Result();
+        try {
+        Boolean baseResult = $!{instName}Service.save($!{instName});
+        result.setStatus(baseResult);
+        } catch (Exception e) {
+        logger.error(request.getRequestURI(), e);
+        result.setStatus(Boolean.FALSE);
+        if (e instanceof ErpException) {
+        result.setReason(e.getMessage());
+        } else {
+        result.setReason("保存失败");
+        }
+        }
+        return result;
+        }
+
+        @RequestMapping(value = "/toEdit", method = RequestMethod.GET)
+        public String toEdit(Model model, Long id, HttpServletRequest request) throws Exception {
+
+        $!{className} $!{instName} = $!{instName}Service.queryByPrimaryKey(id);
+
+        setDictionayToModel(model);
+        model.addAttribute("$!{instName}", $!{instName});
+        return "jsp/edit/$!{className}Edit";
+        }
+
+
+        /**
+        * 更新一个
+        *
+        * @return
+        */
+        @RequestMapping(value = "/edit", method = RequestMethod.PUT)
+        @ResponseBody
+        public Result edit($!{className} $!{instName}, HttpServletRequest request) {
+        Result result = new Result();
+        try {
+        Boolean baseResult = $!{instName}Service.updateByPrimaryKeySelective($!{instName});
+        result.setStatus(baseResult);
+        } catch (Exception e) {
+        logger.error("", e);
+        result.setStatus(Boolean.FALSE);
+        if (e instanceof ErpException) {
+        result.setReason(e.getMessage());
+        } else {
+        result.setReason("更新失败");
+        }
+        }
+        return result;
+        }
+
+        /**
+        * 删除一个
+        *
+        * @param id
+        * @return
+        */
+        @RequestMapping(value = "updateStatus", method = RequestMethod.GET)
+        @ResponseBody
+        public Result updateStatus(Long id, Integer status, HttpServletRequest request) {
+        Result result = new Result();
+        try {
+        $!{className} $!{instName} = new $!{className}();
+        $!{instName}.setId(id);
+
+        Boolean baseResult = $!{instName}Service.updateByPrimaryKeySelective($!{instName});
+        result.setStatus(baseResult);
+        } catch (Exception e) {
+        logger.error("", e);
+        result.setStatus(Boolean.FALSE);
+        if (e instanceof ErpException) {
+        result.setReason(e.getMessage());
+        } else {
+        result.setReason("更新状态失败");
+        }
+        }
+        return result;
+        }
+
+        /**
+        * 删除一个
+        *
+        * @param id
+        * @return
+        */
+        @RequestMapping(value = "delete", method = RequestMethod.DELETE)
+        @ResponseBody
+        public Result delete(Long id, HttpServletRequest request) {
+        Result result = new Result();
+        try {
+        Boolean baseResult = $!{instName}Service.deleteByPrimaryKey(id);
+
+        result.setStatus(baseResult);
+        } catch (Exception e) {
+        logger.error("", e);
+        result.setStatus(Boolean.FALSE);
+        if (e instanceof ErpException) {
+        result.setReason(e.getMessage());
+        } else {
+        result.setReason("删除失败");
+        }
+        }
+        return result;
+        }
+
+
+private void setDictionayToModel(Model model){
+#foreach($field in $indexFields)
+model.addAttribute("$!{field.propertyName}Map", $!{field.propertyName}Map);
+#end
+}
+
+        }

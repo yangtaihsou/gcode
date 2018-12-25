@@ -1,0 +1,46 @@
+<%@ page language="java"  pageEncoding="utf-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<form class="form-inline" role="form" id="$!{instName}Form">
+<table class="table   table-hover"  >
+#foreach($field in $fields)
+    
+       #if($field.propertyName!=$pkname)
+           #if($!{excludeFieldsMap.get($field.propertyName)}!=$field.propertyName)
+ <tr>
+     <td class="col-lg-1">$!field.simpleComment</td>
+     <td>
+         #if($field.htmlElmentType=="date")
+                   <input type="text" name="$!field.propertyName" class="form-control"  value="<fmt:formatDate value="${${instName}.$!field.propertyName}" pattern="yyyy-MM-dd HH:mm:ss"/>"     onclick="WdatePicker({skin:'whyGreen',dateFmt:'yyyy-MM-dd HH:mm'})"/>
+         #elseif($field.htmlElmentType=="select")
+
+
+                   <select name="$!field.propertyName" class="form-control" >
+                       <option value="">请选择$!field.simpleComment</option>
+                       <c:forEach var="item" items="${$!{field.propertyName}Map}">
+                           <option value="${item.key}"
+                           <c:if test="${$!{instName}.$!{field.propertyName}==item.key}"> selected="" </c:if>
+                                   >${item.value}</option>
+                       </c:forEach>
+                   </select>
+
+         #elseif($field.htmlElmentType=="textarea")
+             <textarea name="$!field.propertyName" style="width: 600px;height: 100px" class="form-control"> </textarea>
+         #else
+                    <input type="text" name="$!field.propertyName"  value="${$!{instName}.$!field.propertyName}" class="form-control"/>
+               #end
+  </td> 
+
+  </tr>	 #end #end
+#end
+
+     
+    <tr>
+        <td class="col-lg-1" colspan="2">
+            <input type="button"   class="btn  btn-warning" value="更新" form="$!{instName}Form"  action='post'
+                   requestUrl='/$!{instName}/edit'  method="formRequest"/>
+        </td>
+    <input type="hidden" value="${$!{instName}.$!{pkname}}" name="$!{pkname}" >
+    </tr>
+</table>
+    </form>

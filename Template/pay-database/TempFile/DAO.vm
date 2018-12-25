@@ -1,0 +1,19 @@
+package $!{package};
+
+ 
+public interface I$!{className}DAO{
+     public int add($!{className} b);
+
+     public int updateById(Integer id);
+
+     public int updateByWhere($!{className} b);
+
+     public int deleteById( Integer id );
+
+     public $!{className} getBean( $!{className} b);
+
+     public int getCount( $!{className} b);
+
+     public List<$!{className}> getList( $!{className} b);
+
+}

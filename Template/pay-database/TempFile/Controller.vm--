@@ -1,0 +1,154 @@
+package $!{package};
+import $!{importBean};
+import $!{importService};
+import $!{pkJavaFullType};
+import com.old.jr.simpleconfig.util.PageQuery;
+import com.old.jr.simpleconfig.util.Constant;
+import com.old.jr.simpleconfig.util.ErpException;
+import com.old.jr.simpleconfig.util.pagination.Pagination;
+import com.old.jr.simpleconfig.util.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import com.old.jr.simpleconfig.util.ZKnotify;
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import com.old.jr.simpleconfig.util.ControllerUtil;
+import javax.annotation.Resource;
+@Controller
+@RequestMapping("/$!{instName}")
+public class $!{className}Controller {
+
+    private static final Logger logger = LoggerFactory.getLogger($!{className}Controller.class);
+
+    @Autowired
+    private $!{className}Service $!{instName}Service;
+
+
+
+    @Resource(name = "controllerUtil")
+    private ControllerUtil controllerUtil;
+ 
+    /**
+     * 获取列表
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/list",method = RequestMethod.GET)
+    @Pagination(pageName = "p",pageSize = Constant.pageSize)
+    public String list(Model model,PageQuery<$!{className}> pageQuery,$!{className} $!{instName},HttpServletRequest request) {
+        pageQuery.setQuery($!{instName});
+        pageQuery.setPageSize(1);
+        pageQuery.setPageSize(Constant.pageSize);
+        List<$!{className}> $!{instName}List = $!{instName}Service.queryBySelectiveForPagination(pageQuery);
+	    Long count = $!{instName}Service.queryCountBySelectiveForPagination(pageQuery);
+        model.addAttribute("count", count==null?0:count.intValue());
+        model.addAttribute("$!{instName}List", $!{instName}List);
+        Constant.loadRequestParameterMapToModel(model, request);
+        controllerUtil.loadConfigToModel(model);
+        return "jsp/list/$!{className}List";
+    }
+
+    @RequestMapping(value = "/toAdd",method = RequestMethod.GET)
+    public String toAdd(Model model) {
+        controllerUtil.loadConfigToModel(model);
+        return "jsp/add/$!{className}Add";
+    }
+ 
+
+    /**
+     * 新增
+     * @return
+     */
+    @RequestMapping(value = "/save",method = RequestMethod.POST)
+    @ResponseBody
+    @ZKnotify
+    public Result save($!{className} $!{instName}) {
+        Result result = new Result();
+        try{
+          Boolean t =  $!{instName}Service.save($!{instName});
+          result.setStatus(t);
+          result.setReason(t==false?"保存失败":"");
+        }catch (Exception e){
+            logger.error("",e);
+            result.setStatus(Boolean.FALSE);
+            if (e instanceof ErpException) {
+                result.setReason(e.getMessage());
+            } else {
+                result.setReason("保存失败");
+            }
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/toEdit",method = RequestMethod.GET)
+    public String toEdit(Model model,Long id) {
+    controllerUtil.loadConfigToModel(model);
+       $!{className} $!{instName} = $!{instName}Service.queryByPrimaryKey(id);
+        model.addAttribute("$!{instName}", $!{instName});
+        return "jsp/edit/$!{className}Edit";
+    }
+
+ 
+
+    /**
+     * 更新一个
+     * @return
+     */
+    @RequestMapping(value = "/edit",method = RequestMethod.PUT)
+    @ResponseBody
+    @ZKnotify
+    public Result edit($!{className} $!{instName}) {
+         Result result = new Result();
+        try{
+            Boolean t = $!{instName}Service.updateByPrimaryKeySelective($!{instName});
+            result.setStatus(t);
+            result.setReason(t==false?"更新失败":"");
+        }catch (Exception e){
+            logger.error("",e);
+            result.setStatus(Boolean.FALSE);
+            if (e instanceof ErpException) {
+                result.setReason(e.getMessage());
+            } else {
+                result.setReason("更新失败");
+            }
+        }
+        return result;
+    }
+
+  /**
+     * 删除一个
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "delete", method = RequestMethod.DELETE)
+    @ResponseBody
+    @ZKnotify
+    public Result delete( Long id) {
+        Result result = new Result();
+        try{
+            Boolean t = $!{instName}Service.deleteByPrimaryKey(id);
+            result.setStatus(t);
+            result.setReason(t==false?"删除失败":"");
+        }catch (Exception e){
+            logger.error("",e);
+            result.setStatus(Boolean.FALSE);
+            if (e instanceof ErpException) {
+                result.setReason(e.getMessage());
+            } else {
+                result.setReason("删除失败");
+            }
+        }
+        return result;
+    }
+
+
+
+
+
+}

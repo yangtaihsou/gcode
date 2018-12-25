@@ -1,0 +1,60 @@
+-
+  packagePath: com.old.jr.fin.peerlending.account.export.vo
+  codeTemplateName: pojo.vm
+  fileExtendName:
+  aliasFileName:
+  packageIsSrc : true
+  fileType: java
+  srcTargetChildPath: account-export/src/main/java
+  loadFlag: true
+  simpleFlag: false
+-
+  packagePath: com.old.jr.fin.peerlending.account.export.resource
+  codeTemplateName: Export.vm
+  fileExtendName: ResourceExport
+  fileType: java
+  aliasFileName:
+  packageIsSrc: true
+  srcTargetChildPath: account-export/src/main/java
+  loadFlag: false
+  simpleFlag: false
+-
+  packagePath: com.old.jr.fin.peerlending.account.dao
+  codeTemplateName: Mapper.vm
+  fileExtendName: Mapper
+  fileType: java
+  aliasFileName:
+  packageIsSrc : true
+  srcTargetChildPath: account-dao/src/main/java
+  loadFlag: false
+  simpleFlag: false
+-
+  packagePath: com.old.jr.fin.peerlending.account.service
+  codeTemplateName: Service.vm
+  fileExtendName: Service
+  fileType: java
+  aliasFileName:
+  packageIsSrc : true
+  srcTargetChildPath: account-service/src/main/java
+  loadFlag: false
+  simpleFlag: false
+-
+  packagePath: com.old.jr.fin.peerlending.account.service.impl
+  codeTemplateName: Service.Impl.vm
+  fileExtendName: ServiceImpl
+  fileType: java
+  aliasFileName:
+  packageIsSrc : true
+  srcTargetChildPath: account-service/src/main/java
+  loadFlag: false
+  simpleFlag: false
+-
+  packagePath: com.old.jr.fin.peerlending.account.dao
+  codeTemplateName: sql_map.vm
+  fileExtendName: Mapper
+  aliasFileName:
+  packageIsSrc : false
+  fileType: xml
+  srcTargetChildPath: account-web/src/main/resources/spring/sqlmap
+  loadFlag: true
+  simpleFlag: false

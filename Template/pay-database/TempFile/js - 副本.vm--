@@ -1,0 +1,34 @@
+   me.handler={
+            callbacks:{
+                query$!{className}:function(data){
+                    $('#content').html(data);
+                },
+                toEdit$!{className}:function(data){
+                    $('#content').html(data);
+                }
+            },
+            callPara:{
+                query$!{className}:function(){
+                    var paraData = $('#query$!{className}Form').serialize();
+                    return paraData;
+                },
+                toEdit$!{className}:function(){
+                    return "";
+                }
+            }
+        }
+
+
+   #if(${param})
+           #foreach($map in $param)
+
+                   ${map.get('divName')}
+
+              #end
+           #end
+       #end
+
+   map.put("$!{instName}List",'   <li class="active" style="background-color: #f9f9f9" ><a href="javascript:void(0)" src="/$!{instName}/list">列表</a></li>'+
+   '<li><a href="javascript:void(0)"  src="/$!{instName}/toAdd">添加</a></li>');
+
+   <a class="blog-nav-item " href="javascript:void(0)" id="$!{instName}List">资源管理</a>

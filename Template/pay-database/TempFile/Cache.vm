@@ -1,0 +1,136 @@
+package $!{package};
+import $!{importBean};
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+import com.old.jr.simpleconfig.service.$!{className}Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
+import javax.annotation.PostConstruct;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+/**
+*$!{className}($!{tableComment})的cache
+* User: yangkuan@jd.com
+*/
+@Service("$!{instName}Cache")
+public class $!{className}Cache   implements Cache {
+
+private final static Logger log = LoggerFactory.getLogger($!{className}Cache.class);
+
+
+@Resource(name = "$!{instName}Service")
+private $!{className}Service $!{instName}Service;
+#if(${uniqueIndex})
+    #foreach($uniqKey in ${uniqueIndex.keySet()})
+        #if( ${uniqueIndex.get($uniqKey).size()}==1)
+            public   Map<${uniqueIndex.get($uniqKey).get(0).javaType}, $!{className}> $!{instName}_uq_${uniqueIndex.get($uniqKey).get(0).propertyName}_Map =  new HashMap<${uniqueIndex.get($uniqKey).get(0).javaType}, $!{className}>();
+        #end
+
+        #if( ${uniqueIndex.get($uniqKey).size()}==2)
+            public Table<String, String, $!{className}> $!{instName}_${uniqueIndex.get($uniqKey).get(0).propertyName}_${uniqueIndex.get($uniqKey).get(1).propertyName}_Table = HashBasedTable.create();
+            #end
+       #end
+#end
+
+#if(${commonIndex})
+    #foreach($indexKey in ${commonIndex.keySet()})
+
+        #if( ${commonIndex.get($indexKey).size()}==1)
+           public   Multimap<${commonIndex.get($indexKey).get(0).javaType}, $!{className}> $!{instName}_index_${commonIndex.get($indexKey).get(0).propertyName}_MultiMap = ArrayListMultimap.create();
+        #end
+    #end
+ #end
+
+@PostConstruct
+public void init() {
+    try {
+
+       List<$!{className}> $!{instName}List =  $!{instName}Service.queryBySelective(null);
+
+    #if(${uniqueIndex})
+
+        #foreach($uniqKey in ${uniqueIndex.keySet()})
+            #if( ${uniqueIndex.get($uniqKey).size()}==1)
+                Map<${uniqueIndex.get($uniqKey).get(0).javaType}, $!{className}> $!{instName}_uq_${uniqueIndex.get($uniqKey).get(0).propertyName}_Map1 =  new HashMap<${uniqueIndex.get($uniqKey).get(0).javaType}, $!{className}>();
+            #end
+
+            #if( ${uniqueIndex.get($uniqKey).size()}==2)
+              Table<String, String, $!{className}> $!{instName}_${uniqueIndex.get($uniqKey).get(0).propertyName}_${uniqueIndex.get($uniqKey).get(1).propertyName}_Table1 = HashBasedTable.create();
+            #end
+        #end
+    #end
+
+    #if(${commonIndex})
+        #foreach($indexKey in ${commonIndex.keySet()})
+            #if( ${commonIndex.get($indexKey).size()}==1)
+                Multimap<${commonIndex.get($indexKey).get(0).javaType}, $!{className}> $!{instName}_index_${commonIndex.get($indexKey).get(0).propertyName}_MultiMap1 = ArrayListMultimap.create();
+            #end
+        #end
+    #end
+
+        for($!{className} $!{instName}:$!{instName}List){
+
+            #if(${uniqueIndex})
+                #foreach($uniqKey in ${uniqueIndex.keySet()})
+                    #if( ${uniqueIndex.get($uniqKey).size()}==1)
+                        $!{instName}_uq_${uniqueIndex.get($uniqKey).get(0).propertyName}_Map1.put($!{instName}.${uniqueIndex.get($uniqKey).get(0).getGetterName()}(),$!{instName});
+                    #end
+
+                    #if( ${uniqueIndex.get($uniqKey).size()}==2)
+                        $!{instName}_${uniqueIndex.get($uniqKey).get(0).propertyName}_${uniqueIndex.get($uniqKey).get(1).propertyName}_Table1.put($!{instName}.${uniqueIndex.get($uniqKey).get(0).getGetterName()}(),$!{instName}.${uniqueIndex.get($uniqKey).get(1).getGetterName()}(),$!{instName});
+                        #end
+            #end
+        #end
+
+        #if(${commonIndex})
+        #foreach($indexKey in ${commonIndex.keySet()})
+            #if( ${commonIndex.get($indexKey).size()}==1)
+            $!{instName}_index_${commonIndex.get($indexKey).get(0).propertyName}_MultiMap1.put($!{instName}.${commonIndex.get($indexKey).get(0).getGetterName()}(),$!{instName});
+            #end
+        #end
+        #end
+      }
+    #if(${uniqueIndex})
+        #foreach($uniqKey in ${uniqueIndex.keySet()})
+            #if( ${uniqueIndex.get($uniqKey).size()}==1)
+            $!{instName}_uq_${uniqueIndex.get($uniqKey).get(0).propertyName}_Map =  $!{instName}_uq_${uniqueIndex.get($uniqKey).get(0).propertyName}_Map1;
+                #end
+
+            #if( ${uniqueIndex.get($uniqKey).size()}==2)
+                $!{instName}_${uniqueIndex.get($uniqKey).get(0).propertyName}_${uniqueIndex.get($uniqKey).get(1).propertyName}_Table =  $!{instName}_${uniqueIndex.get($uniqKey).get(0).propertyName}_${uniqueIndex.get($uniqKey).get(1).propertyName}_Table1;
+                #end
+        #end
+    #end
+
+    #if(${commonIndex})
+        #foreach($indexKey in ${commonIndex.keySet()})
+
+            #if( ${commonIndex.get($indexKey).size()}==1)
+            $!{instName}_index_${commonIndex.get($indexKey).get(0).propertyName}_MultiMap = $!{instName}_index_${commonIndex.get($indexKey).get(0).propertyName}_MultiMap1;
+                #end
+        #end
+    #end
+
+    } catch (Exception e) {
+    log.error("请求服务异常:", e);
+
+    }
+
+    }
+
+
+    @Override
+    public void reload() {
+        //super.clearAll(this);
+         this.init();
+    }
+
+    }

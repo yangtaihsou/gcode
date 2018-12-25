@@ -1,0 +1,8 @@
+#foreach($field in $fields)
+
+
+<validator:property name="$!field.propertyName">
+    <validator:NotNull message="请填写$!field.comment"/>
+</validator:property>
+
+#end

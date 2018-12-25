@@ -1,0 +1,21 @@
+package $!{package};
+import java.util.List;
+public interface BaseService<T>{
+
+
+     public List<T> queryBySelective(Query<T> t);
+
+     public Long queryCountBySelective(Query<T> t);
+     
+     public List<T> queryByPrimaryKey($!{pkType} $!{pkname});
+
+     public List<T> deleteByPrimaryKey($!{pkType} $!{pkname});
+ 
+     public Boolean updateByPrimaryKeySelective(T t);
+
+     public Boolean save(T t);
+
+     public List<T> queryBySelectiveForPagination(PageQuery<T> t);
+
+     public Long queryCountBySelectiveForPagination(Query<T> t);
+}

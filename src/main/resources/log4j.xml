@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='GBK' ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+    <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %p - [%t] - %C[%L] - %m \n"/>
+        </layout>
+    </appender>
+
+    <appender name="INFO" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="Append" value="true"/>
+        <param name="file"
+               value="/export/Log/bitcode/info.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %p - [%t] - %m \n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="INFO"/>
+            <param name="LevelMax" value="INFO"/>
+        </filter>
+
+    </appender>
+
+    <appender name="ERROR" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="Append" value="true"/>
+        <param name="file"
+               value="/export/Log/bitcode/error.log"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %p - [%t] - %m \n"/>
+        </layout>
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="ERROR"/>
+            <param name="LevelMax" value="ERROR"/>
+        </filter>
+    </appender>
+
+
+    <logger name="org.springframework">
+        <level value="INFO"/>
+    </logger>
+
+
+    <appender name="ThreadPoolTaskRejection" class="org.apache.log4j.DailyRollingFileAppender">
+        <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+        <param name="Append" value="true"/>
+        <param name="file" value="/export/Log/bitcode/threadPoolTaskRejection.log"/>
+        <!--<param name="ConversionPattern" value="%d %p - %C[%L] - [ThreadId : %T] - %m \n" />-->
+        <!--</layout>-->
+        <filter class="org.apache.log4j.varia.LevelRangeFilter">
+            <param name="LevelMin" value="INFO"/>
+            <param name="LevelMax" value="INFO"/>
+        </filter>
+    </appender>
+
+
+    <logger name="taskReject">
+        <appender-ref ref="ThreadPoolTaskRejection"/>
+    </logger>
+
+
+    <root>
+        <priority value="INFO"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="INFO"/>
+        <appender-ref ref="ERROR"/>
+    </root>
+
+</log4j:configuration>

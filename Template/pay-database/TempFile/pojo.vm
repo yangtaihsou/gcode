@@ -1,0 +1,38 @@
+/**
+ * Copyright(c) 2004-$!year
+ * $!{tem.packagePath}.$!{table.className}.java
+ */
+package $!{tem.packagePath};
+
+import java.io.Serializable;
+ #foreach($import in $table.imports)
+import $import;
+#end
+
+/**
+ * 
+ * @author $!author
+ * @date $!dateTime
+ * $!table.tableComment
+ *
+ */
+public class $!table.className implements Serializable {
+
+#foreach($field in $!table.fieldList)
+    /**
+     * $!field.comment
+     */
+     private $!field.javaType $!field.propertyName;
+#end
+
+#foreach($field in $!table.fieldList)
+	public $!field.javaType $!{field.getterName}() {
+		return $!field.propertyName;
+	}
+	public void $!{field.setterName}()($!field.javaType $!field.propertyName) {
+		this.$!field.propertyName = $!field.propertyName;
+	}
+
+#end
+
+}

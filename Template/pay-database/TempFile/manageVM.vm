@@ -1,0 +1,7 @@
+#foreach($field in $fields) <div class="form-group">
+    <label for="$!{field.propertyName}" class="col-lg-2 control-label">$!field.comment</label>
+    <div class="col-lg-3">
+      <input type="text" class="form-control" id="$!{field.propertyName}" name="$!{field.propertyName}" placeholder="">
+    </div>
+</div>
+	#end

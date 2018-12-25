@@ -1,0 +1,111 @@
+ <?xml version="1.0" encoding="UTF-8" ?>
+    <!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+    <sqlMap namespace="$!{className}">
+
+     <typeAlias alias="$!{className}" type="com.old.insurance.item.domain.$!{className}"/>
+     <typeAlias alias="pageQuery" type="com.old.insurance.item.export.request.Query"/>
+
+
+     <!--查询字段列表 -->
+        <sql id="columnList">
+            #foreach($field in $fields)
+                $!{field.fieldName}  #if($fields.size()!=$velocityCount),#end   <!---->
+            #end
+
+        </sql>
+
+        <!--查询条件 -->
+        <sql id="whereCondition">
+            <dynamic>
+                #foreach($field in $fields)
+                    <isNotEmpty property="queryVo.$field.propertyName">
+                        and $field.fieldName = #queryVo.$field.propertyName#
+                    </isNotEmpty>
+                #end
+            </dynamic>
+        </sql>
+
+        <!--分页条件 -->
+        <sql id="pageCondition">
+            <dynamic>
+                <isNotEmpty property="page">
+                    limit #page.startRow#,#page.sizeOfPage#
+                </isNotEmpty>
+            </dynamic>
+        </sql>
+
+        <!--通过id查询详情 -->
+        <select id="queryById" parameterClass="Long"  resultClass="$!{className}">
+            select
+            <include refid="columnList"></include>
+            FROM    $!{tableName}
+            WHERE
+            ID = #id#		/* 主键id */
+        </select>
+
+        <!--查询列表 -->
+        <select id="getList" parameterClass="Query" resultClass="$!{className}">
+            select
+            <include refid="columnList"></include>
+            from $!{tableName}
+            where 1=1
+            <include refid="whereCondition"></include>
+            <include refid="pageCondition"></include>
+        </select>
+
+        <!--查询记录总数 -->
+        <select id="getCount" parameterClass="Query" resultClass="Integer">
+            select count(1) from $!{tableName}
+            where 1=1
+            <include refid="whereCondition"></include>
+        </select>
+
+        <select id="getTotalCount">
+            select count(1) from $!{tableName}
+        </select>
+
+        <!--增加一条记录 -->
+        <insert id="insert" parameterClass="$!{className}Vo">
+            insert into $!{tableName}
+            (
+            <include refid="columnList"></include>
+            )
+            values
+            (
+
+
+            #foreach($field in $fields)
+
+
+                        #$!{field.propertyName}# #if($fields.size()!=$velocityCount),#end
+
+
+            #end
+            )
+        </insert>
+
+        <!--更新一条记录 -->
+        <update id="update" parameterClass="$!{className}Vo">
+            update $!{tableName}
+            <dynamic prepend="set">
+                #foreach($field in $fields)
+
+                    <isNotEmpty prepend="," property="$!{field.propertyName}">
+                        $!{field.fieldName}=#$!{field.propertyName}#
+                    </isNotEmpty>
+                        #end
+
+
+            </dynamic>
+
+
+            where id=#id#
+        </update>
+
+        <delete id="delete" parameterClass="Long">
+            delete from  $!{tableName} where id=#id#
+        </delete>
+
+    </sqlMap>
+

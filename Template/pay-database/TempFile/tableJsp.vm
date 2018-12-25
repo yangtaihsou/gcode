@@ -1,0 +1,18 @@
+
+   <table class="table table-bordered table-hover">
+        <thead><tr>
+		   #foreach($field in $fields)
+			  <th >$!field.comment</th>
+		   #end	 
+		</tr>
+        </thead>
+        <tbody>
+               
+               <tr> 
+                   #foreach($field in $fields)
+                    <td><input type="text" name="$!field.propertyName" class="form-control"/>
+                   #end
+                </tr>    
+                 
+        </tbody>
+</table>

@@ -1,0 +1,48 @@
+package $!{package};
+import $!{importBean};
+import java.util.List;
+import com.old.jr.fin.peerlending.account.export.query.PageQuery;
+import com.old.jr.fin.peerlending.account.export.query.Query;
+
+public interface $!{className}Mapper{
+
+
+
+
+     public List<$!{className}> queryBySelective(Query<$!{className}> $!{instName});
+
+     public long queryCountBySelective($!{className} $!{instName});
+     
+     public $!{className} queryByPrimaryKey($!{pkType} $!{pkname});
+
+   #*  public int deleteByPrimaryKey($!{pkType} $!{pkname});*#
+
+
+     public $!{pkType} save($!{className} $!{instName});
+
+     public List<$!{className}> queryBySelectiveForPagination(PageQuery<$!{className}> $!{instName});
+
+
+
+   #foreach($index in ${uniqueIndex.keySet()})
+   /**根据唯一索引查询**/
+    public $!{className} queryBy#foreach($field in ${uniqueIndex.get($index)})$!{field.propertyNameForGetAndSet}($!{field.javaType} $!{field.propertyName})#end;
+   /**根据唯一索引更新**/
+   public int updateBy#foreach($field in ${uniqueIndex.get($index)})$!{field.propertyNameForGetAndSet}($!{className} $!{instName})#end;
+
+    #end
+
+#foreach($index in ${commonIndex.keySet()})
+/**根据普通索引查询**/
+public List<$!{className}> queryBy#foreach($field in ${commonIndex.get($index)})$!{field.propertyNameForGetAndSet}($!{field.javaType} $!{field.propertyName})#end;
+/**根据普通索引更新**/
+public int updateBy#foreach($field in ${commonIndex.get($index)})$!{field.propertyNameForGetAndSet}($!{className} $!{instName})#end;
+
+#end
+
+
+#*
+    #foreach($index in ${commonIndex.keySet()})
+    public int deleteByCommonIndex#foreach($field in ${commonIndex.get($index)})$!{field.propertyName}#end($!{className} $!{instName});
+    #end*#
+}

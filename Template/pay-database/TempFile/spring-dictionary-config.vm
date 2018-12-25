@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd"
+       default-autowire="byName" default-lazy-init="true">
+    #foreach($field in $indexFields)
+        <util:map id="$!{field.propertyName}Map" map-class="java.util.HashMap" key-type="$!{field.javaFullType}">
+        #foreach($key in $field.indexSelectValueMap.keySet())
+            <entry key="${key}" value="${field.indexSelectValueMap.get($key)}"/>
+            #end
+        </util:map>
+    #end
+</beans>

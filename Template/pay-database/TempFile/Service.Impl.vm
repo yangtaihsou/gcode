@@ -1,0 +1,64 @@
+package $!{package};
+import $!{importService};
+import $!{importBean};
+import $!{importMapper};
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+import com.old.jr.fin.peerlending.account.export.query.PageQuery;
+import com.old.jr.fin.peerlending.account.export.query.Query;
+import org.springframework.dao.DuplicateKeyException;
+@Service("$!{instName}Service")
+public class $!{className}ServiceImpl implements $!{className}Service{
+
+    private static final Logger logger = LoggerFactory.getLogger($!{className}ServiceImpl.class);
+    @Autowired
+    private $!{className}Mapper $!{instName}Mapper;
+
+
+
+     public List<$!{className}> queryBySelective(Query<$!{className}> $!{instName}){
+	List<$!{className}> $!{instName}List = $!{instName}Mapper.queryBySelective($!{instName});       
+        return $!{instName}List;
+     }
+
+     public Long queryCountBySelective($!{className} $!{instName}){
+	Long count = $!{instName}Mapper.queryCountBySelective($!{instName});
+        return count;
+     }
+
+     public $!{className} queryByPrimaryKey($!{pkType} $!{pkname}){
+     	$!{className} $!{instName} = $!{instName}Mapper.queryByPrimaryKey($!{pkname});
+        return $!{instName};
+     }
+
+
+
+
+     public Boolean save($!{className} $!{instName}) throws Exception{
+        try{
+            $!{pkType} id = $!{instName}Mapper.save($!{instName});
+            return  id == 0 ? false : true;
+        }catch (Exception e){
+            if(e instanceof DuplicateKeyException){
+            RuntimeException runtimeException = new RuntimeException("请检查是否唯一");
+            e = runtimeException;
+        }
+          throw  e;
+        }
+     }
+
+     public List<$!{className}> queryBySelectiveForPagination(PageQuery<$!{className}> $!{instName}){
+	    List<$!{className}> $!{instName}List = $!{instName}Mapper.queryBySelective($!{instName});
+        return $!{instName}List;
+     }
+
+
+
+}

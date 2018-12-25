@@ -1,0 +1,37 @@
+- tableName: sys_user
+  className: SysUser
+  columnConfigs:
+  - columnName: user_id
+    propertyName: userId
+  - columnName: username
+    propertyName: username
+  - columnName: password
+    propertyName: password
+  - columnName: salt
+    propertyName: salt
+  - columnName: email
+    propertyName: email
+  - columnName: mobile
+    propertyName: mobile
+  - columnName: relate_merchant_ids
+    propertyName: relate_merchant_ids
+  - columnName: relate_merchant_names
+    propertyName: relate_merchant_names
+  - columnName: user_type
+    propertyName: user_type
+  - columnName: mfa_secret
+    propertyName: mfa_secret
+  - columnName: mfa_status
+    propertyName: mfa_status
+  - columnName: mfa_time
+    propertyName: mfa_time
+  - columnName: status
+    propertyName: status
+  - columnName: create_user_id
+    propertyName: create_user_id
+  - columnName: create_time
+    propertyName: create_time
+  indexConfigs :
+  - indexName : NewIndex1
+    aliasName : PwdAndSalt
+  loadFlag: true

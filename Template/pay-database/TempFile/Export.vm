@@ -1,0 +1,32 @@
+package $!{package};
+import $!{importBean};
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import com.old.jr.fin.peerlending.account.export.query.PageQuery;
+import com.old.jr.fin.peerlending.account.export.query.Query;
+import com.old.jr.fin.peerlending.account.export.result.ListResult;
+@Path("/service/$!{instName}/")
+@Consumes( { "application/json" })
+@Produces( { "application/json" })
+public interface $!{className}ResourceExport{
+
+    @POST
+    @Path("query")
+     public $!{className} query($!{pkType} $!{pkname});
+
+    @POST
+    @Path("update")
+     public Boolean update($!{className} $!{instName});
+
+    @POST
+    @Path("save")
+     public $!{pkType} save($!{className} $!{instName});
+
+    @POST
+    @Path("list")
+    public ListResult list(PageQuery<$!{className}> pageQuery);
+    }
